@@ -1,0 +1,46 @@
+package wasmcloud:recipes@0.1.0;
+
+/// World for the API component (HTTP handler)
+world recipe-api {
+    // Standard WASI imports
+    import wasi:http/types@0.2.0;
+    import wasi:http/outgoing-handler@0.2.0;
+    import wasi:keyvalue/store@0.2.0;
+    import wasi:logging/logging;
+    import wasi:clocks/wall-clock;
+
+    // Custom interface imports
+    import recipe-crud;
+    import recipe-search;
+
+    // Export HTTP handler
+    export wasi:http/incoming-handler@0.2.0;
+}
+
+/// World for the chat/AI component
+world recipe-chat {
+    // Standard WASI imports
+    import wasi:http/types@0.2.0;
+    import wasi:http/outgoing-handler@0.2.0;
+    import wasi:keyvalue/store@0.2.0;
+    import wasi:logging/logging;
+
+    // Custom interface imports
+    import recipe-crud;
+
+    // Export AI functionality
+    export recipe-ai;
+}
+
+/// World for the calculator component
+world recipe-calculator-component {
+    // Standard WASI imports
+    import wasi:keyvalue/store@0.2.0;
+    import wasi:logging/logging;
+
+    // Custom interface imports
+    import recipe-crud;
+
+    // Export calculator functionality
+    export recipe-calculator;
+}
