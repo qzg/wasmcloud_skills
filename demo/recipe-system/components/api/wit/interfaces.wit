@@ -1,0 +1,85 @@
+package wasmcloud:recipes@0.1.0;
+
+use types.{recipe, recipe-error, search-filters, page-request, page-response, diet-type, ingredient};
+
+/// CRUD operations for recipes
+interface recipe-crud {
+    /// Create a new recipe
+    create: func(recipe: recipe) -> result<string, recipe-error>;
+
+    /// Get a recipe by ID
+    get: func(id: string) -> result<recipe, recipe-error>;
+
+    /// Update an existing recipe
+    update: func(id: string, recipe: recipe) -> result<_, recipe-error>;
+
+    /// Delete a recipe
+    delete: func(id: string) -> result<_, recipe-error>;
+
+    /// List all recipes with pagination
+    list: func(page: page-request) -> result<tuple<list<recipe>, page-response>, recipe-error>;
+}
+
+/// Search functionality for recipes
+interface recipe-search {
+    /// Search recipes with filters
+    search: func(filters: search-filters, page: page-request) -> result<tuple<list<recipe>, page-response>, recipe-error>;
+
+    /// Find recipes that can be made with available ingredients
+    find-by-ingredients: func(available: list<string>) -> result<list<recipe>, recipe-error>;
+}
+
+/// Cost calculation for recipes
+interface recipe-calculator {
+    /// Calculate the cost of a recipe
+    calculate-cost: func(recipe-id: string) -> result<float32, recipe-error>;
+
+    /// Calculate cost for specific serving size
+    calculate-cost-for-servings: func(recipe-id: string, servings: u8) -> result<float32, recipe-error>;
+
+    /// Get price breakdown by ingredient
+    get-cost-breakdown: func(recipe-id: string) -> result<list<tuple<string, float32>>, recipe-error>;
+}
+
+/// AI-powered recipe features
+interface recipe-ai {
+    /// Chat message
+    record message {
+        role: message-role,
+        content: string,
+    }
+
+    /// Message role
+    enum message-role {
+        user,
+        assistant,
+        system,
+    }
+
+    /// Chat request
+    record chat-request {
+        recipe-id: option<string>,
+        messages: list<message>,
+    }
+
+    /// Chat response
+    record chat-response {
+        message: string,
+        updated-recipe: option<recipe>,
+    }
+
+    /// Chat with a recipe to modify it
+    chat: func(request: chat-request) -> result<chat-response, recipe-error>;
+
+    /// Generate a remix/variation of a recipe
+    remix-recipe: func(recipe-id: string, instructions: string) -> result<recipe, recipe-error>;
+
+    /// Adapt recipe for a specific diet
+    adapt-for-diet: func(recipe-id: string, diet: diet-type) -> result<recipe, recipe-error>;
+
+    /// Adjust recipe for different number of servings
+    adjust-servings: func(recipe-id: string, new-servings: u8) -> result<recipe, recipe-error>;
+
+    /// Suggest ingredient substitutions
+    suggest-substitutions: func(recipe-id: string, unavailable: list<string>) -> result<list<tuple<string, list<string>>>, recipe-error>;
+}

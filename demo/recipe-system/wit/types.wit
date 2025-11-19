@@ -1,0 +1,135 @@
+package wasmcloud:recipes@0.1.0;
+
+/// Common types for the recipe management system
+interface types {
+    /// A complete recipe with all metadata
+    record recipe {
+        id: string,
+        name: string,
+        description: option<string>,
+        ingredients: list<ingredient>,
+        instructions: list<step>,
+        servings: u8,
+        prep-time-mins: u32,
+        cook-time-mins: u32,
+        difficulty: difficulty-level,
+        tags: list<string>,
+        dietary-info: list<diet-type>,
+        nutrition: option<nutrition-info>,
+        cost-estimate: option<cost>,
+        created-at: u64,
+        updated-at: u64,
+    }
+
+    /// An ingredient in a recipe
+    record ingredient {
+        name: string,
+        amount: float32,
+        unit: measurement-unit,
+        optional: bool,
+        notes: option<string>,
+    }
+
+    /// A step in recipe instructions
+    record step {
+        order: u8,
+        instruction: string,
+        duration-mins: option<u32>,
+    }
+
+    /// Difficulty level of a recipe
+    enum difficulty-level {
+        easy,
+        medium,
+        hard,
+        expert,
+    }
+
+    /// Dietary restriction or preference
+    enum diet-type {
+        vegan,
+        vegetarian,
+        pescatarian,
+        gluten-free,
+        dairy-free,
+        nut-free,
+        keto,
+        paleo,
+        low-carb,
+        low-fat,
+        low-sodium,
+    }
+
+    /// Unit of measurement for ingredients
+    enum measurement-unit {
+        cup,
+        tablespoon,
+        teaspoon,
+        fluid-ounce,
+        ounce,
+        pound,
+        gram,
+        kilogram,
+        milliliter,
+        liter,
+        piece,
+        pinch,
+        dash,
+        to-taste,
+    }
+
+    /// Nutritional information per serving
+    record nutrition-info {
+        calories: u32,
+        protein-grams: float32,
+        carbs-grams: float32,
+        fat-grams: float32,
+        fiber-grams: float32,
+        sugar-grams: float32,
+        sodium-mg: u32,
+    }
+
+    /// Cost estimation
+    record cost {
+        amount: float32,
+        currency: string,
+        per-serving: float32,
+    }
+
+    /// Error types for recipe operations
+    variant recipe-error {
+        not-found(string),
+        invalid-data(string),
+        duplicate(string),
+        storage-error(string),
+        permission-denied,
+        ai-error(string),
+        network-error(string),
+    }
+
+    /// Search filters for recipes
+    record search-filters {
+        name-query: option<string>,
+        tags: list<string>,
+        dietary: list<diet-type>,
+        difficulty: option<difficulty-level>,
+        max-prep-time: option<u32>,
+        max-cook-time: option<u32>,
+        max-cost: option<float32>,
+        ingredients: list<string>,
+    }
+
+    /// Pagination parameters
+    record page-request {
+        offset: u32,
+        limit: u32,
+    }
+
+    /// Paginated results
+    record page-response {
+        total: u32,
+        offset: u32,
+        limit: u32,
+        has-more: bool,
+    }
+}
